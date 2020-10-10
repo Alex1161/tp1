@@ -1,8 +1,8 @@
 LD = gcc
 TARGET = test
 
-FUENTES = test.c ../Unit_test/unit_test.c ../Encryptors/cesar.c
-OBJS = test.o unit_test.o cesar.o
+FUENTES = *.c ../Unit_test/unit_test.c ../Encryptors/cesar.c
+OBJS = *.o
 
 CFLAGS = -Wall -Werror -pedantic -pedantic-errors
 CFLAGS += -O0 -ggdb -DDEBUG -fno-inline
