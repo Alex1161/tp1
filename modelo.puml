@@ -1,0 +1,37 @@
+@startuml
+hide circles
+skinparam ClassAttributeIconSize 0
+hide interface fields
+
+Class Cesar{
+    -key: int
+    +encode(message: String): String
+    +decode(message: String): String
+}
+
+Class Vigenere{
+    -key: String
+    +encode(message: String): String
+    +decode(message: String): String
+}
+
+Class RC{
+    -key: String
+    +encode(message: String): String
+    +decode(message: String): String
+}
+
+Class Encryptor{
+    +encode(message: String): String
+    +decode(message: String): String
+}
+
+Class Socket{
+    
+}
+
+Cesar ..|> Encryptor
+Vigenere ..|> Encryptor
+RC ..|> Encryptor
+
+@enduml
