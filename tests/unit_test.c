@@ -1,6 +1,5 @@
 #include "unit_test.h"
 #include <stdio.h>
-#include <string.h>
 #include <stdbool.h>
 
 int tester_init(tester_t *self,

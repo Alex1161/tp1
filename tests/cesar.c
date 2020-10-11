@@ -26,7 +26,7 @@ int decode(encryptor_cesar_t *self,
            char *message){
     unsigned char act;
     for (int i = 0; i < code_size; i++) {
-        act = (unsigned char)message[i];
+        act = (unsigned char)code[i];
         message[i] = (char)((act - self->key) % 256);
     }
 

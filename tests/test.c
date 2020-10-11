@@ -4,7 +4,7 @@
   --------------. Main -----------------
   --------------------------------------*/
 
-int main(int argc, char const *argv[]) {
+int main() {
   test_cesar();
   return 0;
 }
