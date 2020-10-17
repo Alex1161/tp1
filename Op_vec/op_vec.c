@@ -1,5 +1,4 @@
-#include "visitor.h"
-#include <stdio.h>
+#include "op_vec.h"
 #include <string.h>
 
 char* itoa(int value, char* result, int base) {
@@ -55,11 +54,41 @@ size_t un_char_to_hexa(unsigned char *element, char *hexa, size_t size_element) 
 	return 2 * size_element;
 }
 
-bool equals(void *s1, void *s2) {
-	size_t size = strlen((char *)s1);
-	return (strncmp((char *)s1, (char *)s2, size) == 0) ? true : false;
+// aun se puede factorizar
+size_t align(int *bytes_key, 
+             int *bytes_key_aligned, 
+             size_t size_bytes_msg, 
+             size_t size_bytes_key) {
+    if (size_bytes_msg <= size_bytes_key) {
+        for (size_t i = 0; i < size_bytes_msg; i++) {
+            bytes_key_aligned[i] = bytes_key[i];
+        }
+    } else {
+        for (size_t i = 0; i < size_bytes_key; i++) {
+            bytes_key_aligned[i] = bytes_key[i];
+        }
+
+        for (size_t i = size_bytes_key; i < size_bytes_msg; i++) {
+            bytes_key_aligned[i] = bytes_key[i - size_bytes_key];
+        }
+    }
+    
+    return size_bytes_msg;
 }
 
-void print(void* element){
-	printf("%s", (char *)element);
+size_t sum(int *bytes1, int *bytes2, int *result, size_t size) {
+    for (size_t i = 0; i < size; i++) {
+        result[i] = bytes1[i] + bytes2[i];
+    }
+    
+    return size;
+}
+
+size_t bytes_to_un_char(int *bytes, unsigned char *result, size_t size_bytes) {
+    size_t size = 0;
+	for (size = 0; size < size_bytes; size++) {
+		result[size] = (unsigned char) bytes[size];
+	}
+	
+	return size;
 }

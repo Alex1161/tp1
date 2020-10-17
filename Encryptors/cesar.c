@@ -6,10 +6,10 @@ int encryptor_cesar_init(encryptor_cesar_t * self, int key) {
     return 0;
 }
 
-int encode(encryptor_cesar_t *self, 
-           const char *message, 
-           size_t message_size,
-           unsigned char *result) {
+int encryptor_cesar_encode(encryptor_cesar_t *self, 
+                           const char *message, 
+                           size_t message_size,
+                           unsigned char *result) {
     unsigned char act;
 
     for (int i = 0; i < message_size; i++) {
@@ -20,10 +20,10 @@ int encode(encryptor_cesar_t *self,
     return 0;
 }
 
-int decode(encryptor_cesar_t *self,
-           unsigned char *code, 
-           size_t code_size , 
-           char *message){
+int encryptor_cesar_decode(encryptor_cesar_t *self,
+                           unsigned char *code, 
+                           size_t code_size, 
+                           char *message){
     unsigned char act;
     for (int i = 0; i < code_size; i++) {
         act = (unsigned char)code[i];

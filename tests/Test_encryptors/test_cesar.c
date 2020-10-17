@@ -1,7 +1,8 @@
 #include "test_cesar.h"
-#include "../Unit_test/unit_test.h"
-#include "../Encryptors/cesar.h"
-#include "visitor.h"
+#include "../../Unit_test/unit_test.h"
+#include "../../Encryptors/cesar.h"
+#include "../../Op_vec/op_vec.h"
+#include "Adapters/adapters.h"
 #include <string.h>
 
 /*--------------------------------------
@@ -34,7 +35,7 @@ static void test1(){
     tester_init(&test1, equals, print, "encode Pan -> 556673");
 
     unsigned char encoded[3] = "";
-    encode(&encryptor_cesar, "Pan", 3, encoded);
+    encryptor_cesar_encode(&encryptor_cesar, "Pan", 3, encoded);
 	char actual[6] = "";
 	un_char_to_hexa(encoded, actual, 3);
     const char expected[] = "556673";
@@ -53,7 +54,7 @@ static void test2(){
 	tester_init(&test2, equals, print, "decode 556673 -> Pan");
 
 	char actual[3] = "";
-	decode(&encryptor_cesar, (unsigned char *)"Ufs", 3, actual);
+	encryptor_cesar_decode(&encryptor_cesar, (unsigned char *)"Ufs", 3, actual);
 	const char expected[] = "Pan";
 
 	tester_test(&test2, (void *)expected, (void *)actual);
@@ -70,7 +71,7 @@ static void test3(){
 	tester_init(&test3, equals, print, "encode BABA -> 1010");
 
 	unsigned char encoded[4] = "";
-    encode(&encryptor_cesar, "BABA", 4, encoded);
+    encryptor_cesar_encode(&encryptor_cesar, "BABA", 4, encoded);
 	char actual[8] = "";
 	un_char_to_hexa(encoded, actual, 4);
     const char expected[] = "1010";
