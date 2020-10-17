@@ -15,7 +15,7 @@ int encode(encryptor_cesar_t *self,
            unsigned char *result);
 
 int decode(encryptor_cesar_t *self, 
-           char *code, 
+           unsigned char *code, 
            size_t code_size, 
            char *message);
 

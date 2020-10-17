@@ -11,17 +11,17 @@ int encode(encryptor_cesar_t *self,
            size_t message_size,
            unsigned char *result) {
     unsigned char act;
-    //int i;
+
     for (int i = 0; i < message_size; i++) {
         act = (unsigned char)message[i];
         result[i] = (char)((act + self->key) % 256);
     }
-    //result[i] = '\0';
+
     return 0;
 }
 
 int decode(encryptor_cesar_t *self,
-           char *code, 
+           unsigned char *code, 
            size_t code_size , 
            char *message){
     unsigned char act;
