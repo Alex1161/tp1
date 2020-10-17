@@ -2,7 +2,6 @@
 #include "Test_encryptors/test_cesar.h"
 #include "Test_encryptors/test_vigenere.h"
 
-
 /*--------------------------------------
   --------------. Main -----------------
   --------------------------------------*/

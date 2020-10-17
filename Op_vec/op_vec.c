@@ -37,6 +37,15 @@ size_t un_char_to_bytes(unsigned char *element, int *bytes, size_t size_element)
 	return size;
 }
 
+size_t bytes_to_un_char(int *bytes, unsigned char *result, size_t size_bytes) {
+    size_t size = 0;
+	for (size = 0; size < size_bytes; size++) {
+		result[size] = (unsigned char) (bytes[size] % 256);
+	}
+	
+	return size;
+}
+
 size_t un_char_to_hexa(unsigned char *element, char *hexa, size_t size_element) {
 	
 	int bytes[size_element];
@@ -84,11 +93,10 @@ size_t sum(int *bytes1, int *bytes2, int *result, size_t size) {
     return size;
 }
 
-size_t bytes_to_un_char(int *bytes, unsigned char *result, size_t size_bytes) {
-    size_t size = 0;
-	for (size = 0; size < size_bytes; size++) {
-		result[size] = (unsigned char) bytes[size];
-	}
-	
-	return size;
+size_t sub(int *bytes1, int *bytes2, int *result, size_t size) {
+    for (size_t i = 0; i < size; i++) {
+        result[i] = bytes1[i] - bytes2[i];
+    }
+    
+    return size;
 }

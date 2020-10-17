@@ -24,5 +24,7 @@ size_t align(int *bytes_key,
 // Suma byte a byte 2 arreglos del mismo tamaño y los guarda en result y retorna el tamaño
 size_t sum(int *bytes1, int *bytes2, int *result, size_t size);
 
+// Resta byte a byte 2 arreglos del mismo tamaño y los guarda en result y retorna el tamaño
+size_t sub(int *bytes1, int *bytes2, int *result, size_t size);
 
 #endif
