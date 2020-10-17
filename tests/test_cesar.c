@@ -2,7 +2,7 @@
 #include "../Unit_test/unit_test.h"
 #include "../Encryptors/cesar.h"
 #include "visitor.h"
-#include <stdlib.h>
+#include <string.h>
 
 /*--------------------------------------
   ------ Test Cases Declarations -------
@@ -31,12 +31,14 @@ static void test1(){
     encryptor_cesar_init(&encryptor_cesar, 5);
 
     tester_t test1;
-    tester_init(&test1, equals, print, "encode Pan -> Ufs");
+    tester_init(&test1, equals, print, "encode Pan -> 556673");
 
-	//char actual[3]; por que no funciona???
-    unsigned char actual[3] = "";
-    encode(&encryptor_cesar, "Pan", 3, actual);
-    const char expected[] = "Ufs";
+    unsigned char encoded[3] = "";
+    encode(&encryptor_cesar, "Pan", 3, encoded);
+	char actual[6] = "";
+	un_char_to_hexa(encoded, actual, 3);
+    const char expected[] = "556673";
+
     tester_test(&test1, (void *)expected, (void *)actual);
 
     tester_uninit(&test1);
@@ -48,7 +50,7 @@ static void test2(){
 	encryptor_cesar_init(&encryptor_cesar, 5);
 
 	tester_t test2;
-	tester_init(&test2, equals, print, "decode Ufs -> Pan");
+	tester_init(&test2, equals, print, "decode 556673 -> Pan");
 
 	char actual[3] = "";
 	decode(&encryptor_cesar, (unsigned char *)"Ufs", 3, actual);
@@ -64,16 +66,18 @@ static void test3(){
 	encryptor_cesar_t encryptor_cesar;
 	encryptor_cesar_init(&encryptor_cesar, 191);
 
-	tester_t test2;
-	tester_init(&test2, equals, print, "encode BABA -> Pan");
+	tester_t test3;
+	tester_init(&test3, equals, print, "encode BABA -> 1010");
 
-	unsigned char actual[4] = "";
-	encode(&encryptor_cesar, "BABA", 4, actual);
-	const char expected[] = "1010";
+	unsigned char encoded[4] = "";
+    encode(&encryptor_cesar, "BABA", 4, encoded);
+	char actual[8] = "";
+	un_char_to_hexa(encoded, actual, 4);
+    const char expected[] = "1010";
 
-	tester_test(&test2, (void *)expected, (void *)actual);
+	tester_test(&test3, (void *)expected, (void *)actual);
 
-	tester_uninit(&test2);
+	tester_uninit(&test3);
 	encryptor_cesar_uninit(&encryptor_cesar);
 }
 
