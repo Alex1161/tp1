@@ -8,5 +8,5 @@ bool equals(void *s1, void *s2) {
 }
 
 void print(void* element){
-  printf("%s\n", (char *)element);
+  printf("%s", (char *)element);
 }

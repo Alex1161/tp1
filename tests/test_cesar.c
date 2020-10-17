@@ -1,6 +1,6 @@
 #include "test_cesar.h"
-#include "unit_test.h"
-#include "cesar.h"
+#include "../Unit_test/unit_test.h"
+#include "../Encryptors/cesar.h"
 #include "visitor.h"
 #include <stdlib.h>
 
@@ -32,12 +32,11 @@ static void test1(){
     tester_init(&test1, equals, print, "encode Pan -> Ufs");
 
 	//char actual[3]; por que no funciona???
-    unsigned char *actual = malloc(3 * sizeof(unsigned char));
+    unsigned char actual[3] = "";
     encode(&encryptor_cesar, "Pan", 3, actual);
     const char expected[] = "Ufs";
     tester_test(&test1, (void *)expected, (void *)actual);
 
-	free(actual);
     tester_uninit(&test1);
     encryptor_cesar_uninit(&encryptor_cesar);
 }
@@ -49,13 +48,12 @@ static void test2(){
 	tester_t test2;
 	tester_init(&test2, equals, print, "decode Ufs -> Pan");
 
-	char *actual = malloc(3 * sizeof(char));
+	char actual[3] = "";
 	decode(&encryptor_cesar, "Ufs", 3, actual);
 	const char expected[] = "Pan";
 
 	tester_test(&test2, (void *)expected, (void *)actual);
 
-	free(actual);
 	tester_uninit(&test2);
 	encryptor_cesar_uninit(&encryptor_cesar);
 }

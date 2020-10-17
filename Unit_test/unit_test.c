@@ -26,8 +26,10 @@ void tester_test(tester_t *self, void *expected, void *actual) {
         printf("Test %s: ERROR\n", self->test_name);
         printf("\tExpected: ");
         self->print(expected);
+        printf("\n");
         printf("\tActual: ");
         self->print(actual);
+        printf("\n");
         printf("\033[0m");
     }
 }
