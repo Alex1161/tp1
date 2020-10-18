@@ -78,7 +78,7 @@ size_t align(int *bytes_key,
         }
 
         for (size_t i = size_bytes_key; i < size_bytes_msg; i++) {
-            bytes_key_aligned[i] = bytes_key[i - size_bytes_key];
+            bytes_key_aligned[i] = bytes_key[i % size_bytes_key];
         }
     }
     
@@ -99,4 +99,21 @@ size_t sub(int *bytes1, int *bytes2, int *result, size_t size) {
     }
     
     return size;
+}
+
+size_t xor(const char *message, 
+		   unsigned char *key_stream, 
+		   unsigned char *result, 
+		   size_t size){
+	for (size_t i = 0; i < size; i++) {
+		result[i] = message[i] ^ key_stream[i];
+	}
+	
+	return size;
+}
+
+void swap(unsigned char *s, size_t i, size_t j) {
+    unsigned char aux = s[i];
+    s[i] = s[j];
+    s[j] = aux;
 }

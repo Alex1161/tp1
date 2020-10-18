@@ -3,6 +3,7 @@
 
 int encryptor_cesar_init(encryptor_cesar_t * self, int key) {
     self->key = key;
+    
     return 0;
 }
 
