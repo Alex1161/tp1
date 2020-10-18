@@ -20,21 +20,14 @@ static void ksa(encryptor_arc4_t *self) {
     }
 }
 
-// static unsigned char prga(unsigned char *stream, size_t i, size_t j) {
-//     i = (i + 1) % STREAM_SIZE;
-//     j = (j + stream[i]) % STREAM_SIZE;
-
-//     swap(stream, i, j);
-
-//     return stream[(stream[i] + stream[j]) % STREAM_SIZE];
-//}
-
 static int gen_key_stream(unsigned char *stream, 
                           unsigned char *key_stream, 
                           size_t size_message){
     size_t i = 0;
     size_t j = 0;
+
     for (size_t k = 0; k < size_message; k++) {
+        //PRGA
         i = (i + 1) % STREAM_SIZE;
         j = (j + stream[i]) % STREAM_SIZE;
 

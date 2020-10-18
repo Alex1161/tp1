@@ -12,6 +12,7 @@
 static void test1();
 static void test2();
 static void test3();
+static void test4();
 
 /*--------------------------------------
   ------------- Test Cesar -------------
@@ -21,6 +22,7 @@ void test_cesar(){
     test1();
 	test2();
 	test3();
+	test4();
 }
 
 /*--------------------------------------
@@ -32,7 +34,7 @@ static void test1(){
     encryptor_cesar_init(&encryptor_cesar, 5);
 
     tester_t test1;
-    tester_init(&test1, equals, print, "encode Pan -> 556673");
+    tester_init(&test1, equals, print, "encode Pan with key 5 -> 556673");
 
     unsigned char encoded[3] = "";
     encryptor_cesar_encode(&encryptor_cesar, "Pan", 3, encoded);
@@ -51,7 +53,7 @@ static void test2(){
 	encryptor_cesar_init(&encryptor_cesar, 5);
 
 	tester_t test2;
-	tester_init(&test2, equals, print, "decode 556673 -> Pan");
+	tester_init(&test2, equals, print, "decode 556673 with key 5 -> Pan");
 
 	char actual[3] = "";
 	encryptor_cesar_decode(&encryptor_cesar, (unsigned char *)"Ufs", 3, actual);
@@ -68,7 +70,7 @@ static void test3(){
 	encryptor_cesar_init(&encryptor_cesar, 191);
 
 	tester_t test3;
-	tester_init(&test3, equals, print, "encode BABA -> 1010");
+	tester_init(&test3, equals, print, "encode BABA with key 191 -> 1010");
 
 	unsigned char encoded[4] = "";
     encryptor_cesar_encode(&encryptor_cesar, "BABA", 4, encoded);
@@ -82,3 +84,21 @@ static void test3(){
 	encryptor_cesar_uninit(&encryptor_cesar);
 }
 
+static void test4(){
+	encryptor_cesar_t encryptor_cesar;
+	encryptor_cesar_init(&encryptor_cesar, 191);
+
+	tester_t test3;
+	tester_init(&test3, equals, print, "decode 1010 with key 191 -> BABA");
+
+	unsigned char encoded[4] = "";
+    encryptor_cesar_encode(&encryptor_cesar, "BABA", 4, encoded);
+	char actual[4] = "";
+	encryptor_cesar_decode(&encryptor_cesar, encoded, 4, actual);
+    const char expected[] = "BABA";
+
+	tester_test(&test3, (void *)expected, (void *)actual);
+
+	tester_uninit(&test3);
+	encryptor_cesar_uninit(&encryptor_cesar);
+}
