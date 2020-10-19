@@ -1,20 +1,16 @@
+#define _POSIX_C_SOURCE 200112L
 #include "common_socket.h"
-#include <sys/types.h>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <netdb.h>
 #include <string.h>
 #include <stdbool.h>
 
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <unistd.h>
 
 const int ERROR = -1;
 
 int socket_init(socket_t *self) {
-    // self->fd = socket(AF_LOCAL, AF_INET, SOCK_STREAM);
-    // if (self->fd == -1) {
-    //     return ERROR;
-    // }
-    
     return 0;
 }
 
@@ -34,6 +30,7 @@ int socket_bind_listen(socket_t *self,
         return ERROR;
     }
 
+    self->fd = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
     status = bind(self->fd, result->ai_addr, result->ai_addrlen);
     if (status != 0){
         return ERROR;
@@ -51,7 +48,7 @@ int socket_bind_listen(socket_t *self,
 
 int socket_accept(socket_t *listener, socket_t *peer) {
     peer->fd = accept(listener->fd, NULL, NULL);
-    if (peer->fd = -1) {
+    if (peer->fd == -1) {
         return ERROR;
     }
     
@@ -122,15 +119,15 @@ int socket_send(socket_t *self, const char *buffer, size_t length) {
 }
 
 int socket_receive(socket_t *self, char *buffer, size_t length) {
-    size_t received = 0;
-    size_t status = 0;
+    int received = 0;
+    int status = 0;
     bool socket_valid = true;
 
-    while (received < length && socket_valid) {
-        status = recv(self->fd, &buffer[received], length-received, 0);
+    while (received < (int)length && socket_valid) {
+        status = recv(self->fd, &buffer[received], (int)length - received, 0);
 
         if (status == 0) {
-            socket_valid = false;
+            break;
         } else if (status == -1) {
             socket_valid = false;
         } else {
