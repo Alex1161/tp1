@@ -1,4 +1,4 @@
-@startuml
+@startuml tp
 hide circles
 skinparam ClassAttributeIconSize 0
 hide interface fields
@@ -11,19 +11,19 @@ Class Cesar{
 
 Class Vigenere{
     -key: String
-    +encode(self: encryptor_cesar_t *, message: const char *, result: const char *): int
-    +decode(message: String): String
+    +encode(self: encryptor_cesar_t *, message: const char *, message_size: size_t, result: const char *): int
+    +decode(self: encryptor_cesar_t *, code: unsigned char *, code_size: size_t, message: char *): int
 }
 
-Class RC{
+Class ARC4{
     -key: String
-    +encode(self: encryptor_cesar_t *, message: const char *, result: const char *): int
-    +decode(message: String): String
+    +encode(self: encryptor_cesar_t *, message: const char *, message_size: size_t, result: const char *): int
+    +decode(self: encryptor_cesar_t *, code: unsigned char *, code_size: size_t, message: char *): int
 }
 
 Class Encryptor{
-    +encode(self: encryptor_cesar_t *, message: const char *, result: const char *): int
-    +decode(message: String): String
+    +encode(self: encryptor_cesar_t *, message: const char *, message_size: size_t, result: const char *): int
+    +decode(self: encryptor_cesar_t *, code: unsigned char *, code_size: size_t, message: char *): int
 }
 
 Class Socket{
@@ -32,6 +32,6 @@ Class Socket{
 
 Cesar ..|> Encryptor
 Vigenere ..|> Encryptor
-RC ..|> Encryptor
+ARC4 ..|> Encryptor
 
 @enduml
