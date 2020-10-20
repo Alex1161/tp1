@@ -26,7 +26,7 @@ Ahora se explicará la responsabilidad de cada entidad.
 
 ![DC main](Diagramas/Png/processor_superior.png?raw=true "Diagrama de clases main")
 
-### **Clien_main y Server_main**
+### **Client_main y Server_main**
 Ambas son responsables de parsear sus entradas de comando e inicializar correctamente la entidad **Procesor** con alguno de los algoritmos de encriptado, también son los encargados de pasarle lo que necesita para establecer la conexión (IP y Port si es client o solo Port si es server).
 
 ### **Processor**
@@ -63,7 +63,7 @@ Estas dos últimas entidades usaban muchas operaciones entre arreglos las cuales
 ### **Op_vec**
 Es la responsable de todas las operaciones entre vectores que se necesitaron en este tp.
 
-## **Extra**
+## **Ejecución de pruebas**
 Para este tp también se implemento un pequeño test unit para poder probar el correcto funcionamiento de los encryptors. Para eso se le agrego dos funciones mas a la biblioteca Op_vec para poder probar las codificaciones.
 
 ~~~

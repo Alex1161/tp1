@@ -1,4 +1,4 @@
-@startuml DC general
+@startuml DC
 hide circles
 skinparam ClassAttributeIconSize 0
 hide interface fields
@@ -64,7 +64,7 @@ Class Op_vec{
     +swap(s: unsigned char *, i: size_t, j: size_t): void
 }
 
-Class Clien_main{
+Class Client_main{
     +main(argc: int, argv: const char **): int
 }
 
@@ -80,7 +80,7 @@ Processor -right-> Socket
 Processor -down-> Encryptor
 Vigenere -down-> Op_vec
 ARC4 -down-> Op_vec
-Clien_main --> Processor
+Client_main --> Processor
 Server_main --> Processor
 
 @enduml

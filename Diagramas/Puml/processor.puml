@@ -9,7 +9,7 @@ class Processor{
     +processor_process_server(server_port: const char *, file_name: const char *): int
 }
 
-Class Clien_main{
+Class Client_main{
     +main(argc: int, argv: const char **): int
 }
 
@@ -17,7 +17,7 @@ Class Server_main{
     +main(argc: int, argv: const char **): int
 }
 
-Clien_main --> Processor
+Client_main --> Processor
 Server_main --> Processor
 
 @enduml
