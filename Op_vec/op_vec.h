@@ -3,7 +3,8 @@
 
 #include <stddef.h>
 
-// Transforma un valor entero en un string con su representacion en hexadecimal
+// Transforma un valor entero en un string con su representacion en la base
+// especificada.
 char* itoa(int value, char* result, int base);
 
 // Transforma de unsigned char a un string de su valor numerico en hexadecimal
