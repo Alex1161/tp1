@@ -20,7 +20,7 @@ int main(int argc, char const *argv[]) {
 
     processor_t processor;
     processor_init(&processor, method, key);
-    processor_process(&processor, server_host, server_port);
+    processor_process_client(&processor, server_host, server_port, NULL);
     processor_uninit(&processor);
 
     return 0;

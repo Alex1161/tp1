@@ -1,4 +1,4 @@
-#include "common_file_reader.h"
+#include "common_file_processor.h"
 #include <string.h>
 
 const size_t CHUNK_SIZE = 64;
@@ -13,34 +13,53 @@ static size_t file_size(FILE *file);
   ------------------------- FUNCTIONS DEFINITIONS ---------------------------
   ---------------------------------------------------------------------------*/
 
-int file_reader_init(file_reader_t *file_reader, const char *name) {
-    file_reader->name = name;
-    file_reader->file = (name == NULL) ? stdin : fopen(name, "rw");
-    if (! file_reader->file) {
+int file_processor_reader_init(file_processor_t *self, 
+                               const char *file_name) {
+    self->name = file_name;
+    self->file = (file_name == NULL) ? stdin : fopen(file_name, "r");
+    if (! self->file) {
         return 1;
     }
-    file_reader->file_size = file_size(file_reader->file);
+    self->file_size = file_size(self->file);
     
     return 0;
 }
 
-size_t file_reader_read(file_reader_t *file_reader, char *msg){
+int file_processor_writer_init(file_processor_t *self, 
+                               const char *file_name) {
+    self->name = file_name;
+    self->file = (file_name == NULL) ? stdout : fopen(file_name, "w");
+    if (! self->file) {
+        return 1;
+    }
+    self->file_size = file_size(self->file);
+    
+    return 0;
+}
+
+size_t file_processor_read(file_processor_t *self, char *msg) {
     char buffer[CHUNK_SIZE];
     memset(buffer, 0, CHUNK_SIZE * sizeof(char));
 
-    size_t size = file_size(file_reader->file);
+    size_t size = file_size(self->file);
 
-    while (! feof(file_reader->file)) {
-        size_t read = fread(buffer, 1, CHUNK_SIZE, file_reader->file);
+    while (! feof(self->file)) {
+        size_t read = fread(buffer, 1, CHUNK_SIZE, self->file);
         strncat(msg, buffer, read);
     }
 
     return size;
 }
 
-int file_reader_uninit(file_reader_t *file_reader) {
-    if (file_reader->name != NULL) {
-        fclose(file_reader->file);
+size_t file_processor_write(file_processor_t *self, 
+                            char *buffer, 
+                            size_t size_buffer) {
+    return fwrite(buffer, 1, size_buffer, stdout);
+}
+
+int file_processor_uninit(file_processor_t *self) {
+    if (self->name != NULL) {
+        fclose(self->file);
     }
 
     return 0;
