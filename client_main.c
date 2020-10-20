@@ -58,18 +58,18 @@ int main(int argc, char const *argv[]) {
     char buffer[CHUNK_SIZE];
     memset(buffer, 0, CHUNK_SIZE * sizeof(char));
     FILE *file = stdin;
+    socket_t socket;
+    socket_init(&socket);
+    socket_connect(&socket, server_host, server_port);
     while (! feof(file)) {
         size_t read = fread(buffer, 1, CHUNK_SIZE, file);
         unsigned char result[read];
         memset(result, 0, read * sizeof(unsigned char));
         encode(buffer, read, method, key, result);
          
-        socket_t socket;
-        socket_init(&socket);
-        socket_connect(&socket, server_host, server_port);
         socket_send(&socket, (const char *)result, read);
-        socket_uninit(&socket);
     }
+    socket_uninit(&socket);
 
     return 0;
 }

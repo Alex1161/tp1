@@ -65,13 +65,16 @@ int main(int argc, char const *argv[]) {
 
     char buffer[CHUNK_SIZE];
     memset(buffer, 0, CHUNK_SIZE * sizeof(char));
-    size_t received;
-    received = socket_receive(&peer, buffer, CHUNK_SIZE);
-    char result[received];
-    memset(result, 0, received * sizeof(char));
+    int received = socket_receive(&peer, buffer, CHUNK_SIZE);;
+    while (received != 0) {
+        char result[received];
+        memset(result, 0, received * sizeof(char));
 
-    decode(buffer, received, method, key, result);
-    fwrite(result, 1, received, stdout);
+        decode(buffer, received, method, key, result);
+        fwrite(result, 1, received, stdout);
+        received = socket_receive(&peer, buffer, CHUNK_SIZE);
+    }
+    
 
     socket_uninit(&peer);
     socket_uninit(&socket);
