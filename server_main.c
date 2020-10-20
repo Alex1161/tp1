@@ -71,7 +71,7 @@ int main(int argc, char const *argv[]) {
     memset(result, 0, received * sizeof(char));
 
     decode(buffer, received, method, key, result);
-    printf("%s", result);
+    fwrite(result, 1, received, stdout);
 
     socket_uninit(&peer);
     socket_uninit(&socket);
