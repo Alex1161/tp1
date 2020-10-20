@@ -1,5 +1,6 @@
 #include "common_vigenere.h"
 #include "common_op_vec.h"
+#include <stdlib.h>
 
 int encryptor_vigenere_init(encryptor_vigenere_t * self, 
                             char *key, 
@@ -14,25 +15,25 @@ int encryptor_vigenere_encode(encryptor_vigenere_t *self,
                               size_t message_size, 
                               unsigned char *result) {
     // pasar a numeros mensaje y key
-    int bytes_message[message_size];
+    int *bytes_message = malloc(message_size * sizeof(int));
     size_t size_bytes_msg = un_char_to_bytes((unsigned char *)message, 
                                              bytes_message, 
                                              message_size);
 
-    int bytes_key[self->size_key];
+    int *bytes_key = malloc(self->size_key * sizeof(int));
     size_t size_bytes_key = un_char_to_bytes((unsigned char *)self->key, 
                                              bytes_key, 
                                              self->size_key);
 
     // alinear el tamañano de key al tamñano del msg
-    int bytes_key_aligned[size_bytes_msg];
+    int *bytes_key_aligned = malloc(size_bytes_msg * sizeof(int));
     size_t size_bytes_key_aligned = align(bytes_key, 
                                           bytes_key_aligned, 
                                           size_bytes_msg, 
                                           size_bytes_key);
 
     // Sumar byte a byte
-    int bytes_encoded[size_bytes_key_aligned];
+    int *bytes_encoded = malloc(size_bytes_key_aligned * sizeof(int));
     size_t size_bytes_encoded = sum(bytes_message, 
                                     bytes_key_aligned, 
                                     bytes_encoded, 
@@ -41,6 +42,10 @@ int encryptor_vigenere_encode(encryptor_vigenere_t *self,
     // Trasnformar a unsigned char
     bytes_to_un_char(bytes_encoded, result, size_bytes_encoded);
 
+    free(bytes_encoded);
+    free(bytes_key_aligned);
+    free(bytes_key);
+    free(bytes_message);
     return 0;
 }
 
@@ -49,34 +54,40 @@ int encryptor_vigenere_decode(encryptor_vigenere_t *self,
                               size_t code_size, 
                               char *message){
     // Paso el code y la key a bytes
-    int bytes_code[code_size];
+    int *bytes_code = malloc(code_size * sizeof(int));
     size_t size_bytes_code = un_char_to_bytes(code, 
                                              bytes_code, 
                                              code_size);
 
-    int bytes_key[self->size_key];
+    int *bytes_key = malloc(self->size_key * sizeof(int));
     size_t size_bytes_key = un_char_to_bytes((unsigned char *)self->key, 
                                              bytes_key, 
                                              self->size_key);
 
 
     // Alineo el tamaño de la key con el tamaño del code
-    int bytes_key_aligned[size_bytes_code];
+    int *bytes_key_aligned = malloc(size_bytes_code * sizeof(int));
     size_t size_bytes_key_aligned = align(bytes_key, 
                                           bytes_key_aligned, 
                                           size_bytes_code, 
                                           size_bytes_key);
 
     // Resto el code con la key alineada byte a byte
-    int bytes_decoded[size_bytes_key_aligned];
+    int *bytes_decoded = malloc(size_bytes_key_aligned * sizeof(int));
     size_t size_bytes_decoded = sub(bytes_code, 
                                     bytes_key_aligned, 
                                     bytes_decoded, 
                                     size_bytes_code);
 
     // Transformo a char
-    bytes_to_un_char(bytes_decoded, (unsigned char *)message, size_bytes_decoded);
+    bytes_to_un_char(bytes_decoded, 
+                     (unsigned char *)message, 
+                     size_bytes_decoded);
 
+    free(bytes_decoded);
+    free(bytes_key_aligned);
+    free(bytes_key);
+    free(bytes_code);
     return 0;
 }
 

@@ -18,7 +18,10 @@ void decode_cesar(unsigned char* msg, int key, size_t length, char *result){
     encryptor_cesar_uninit(&cesar);
 }
 
-void decode_vigenere(unsigned char* msg, char *key, size_t length, char *result){
+void decode_vigenere(unsigned char* msg, 
+                     char *key, 
+                     size_t length, 
+                     char *result){
     encryptor_vigenere_t vigenere;
     encryptor_vigenere_init(&vigenere, key, strlen(key));
     encryptor_vigenere_decode(&vigenere, msg, length, result);
@@ -51,9 +54,11 @@ int main(int argc, char const *argv[]) {
     //Parseando los argumentos de comando de linea
     const char *server_port = argv[1];
     char method[strlen(argv[2]) - METHOD_LENGTH];
-    strcpy(method, &argv[2][METHOD_LENGTH]);
+    strncpy(method, 
+            &argv[2][METHOD_LENGTH], 
+            strlen(argv[2]) - METHOD_LENGTH + 1);
     char key[strlen(argv[3]) - KEY_LENGTH];
-    strcpy(key, &argv[3][KEY_LENGTH]);
+    strncpy(key, &argv[3][KEY_LENGTH], strlen(argv[3]) - KEY_LENGTH + 1);
 
     socket_t socket;
     socket_init(&socket);
@@ -67,18 +72,17 @@ int main(int argc, char const *argv[]) {
     memset(buffer, 0, CHUNK_SIZE * sizeof(char));
     int received = socket_receive(&peer, buffer, CHUNK_SIZE);;
     while (received != 0) {
-        char result[received];
+        char *result = malloc(received * sizeof(char));
         memset(result, 0, received * sizeof(char));
 
         decode(buffer, received, method, key, result);
         fwrite(result, 1, received, stdout);
         received = socket_receive(&peer, buffer, CHUNK_SIZE);
+        free(result);
     }
-    
 
     socket_uninit(&peer);
     socket_uninit(&socket);
 
     return 0;
-
 }

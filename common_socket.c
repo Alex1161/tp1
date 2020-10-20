@@ -28,7 +28,9 @@ int socket_bind_listen(socket_t *self, const char *service) {
         return ERROR;
     }
 
-    self->fd = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+    self->fd = socket(result->ai_family, 
+                      result->ai_socktype, 
+                      result->ai_protocol);
     status = bind(self->fd, result->ai_addr, result->ai_addrlen);
     if (status != 0){
         return ERROR;
@@ -94,11 +96,13 @@ int socket_connect(socket_t *self,
 
 int socket_send(socket_t *self, const char *buffer, size_t length) {
     int sent = 0;
-    int status = 0;
     bool socket_valid = true;
 
     while (sent < (int)length && socket_valid) {
-        status = send(self->fd, &buffer[sent], (int)length - sent, MSG_NOSIGNAL);
+        int status =send(self->fd, 
+                         &buffer[sent], 
+                         (int)length - sent, 
+                         MSG_NOSIGNAL);
 
         if (status == 0) {
             socket_valid = false;
@@ -118,11 +122,13 @@ int socket_send(socket_t *self, const char *buffer, size_t length) {
 
 int socket_receive(socket_t *self, char *buffer, size_t length) {
     int received = 0;
-    int status = 0;
     bool socket_valid = true;
 
     while (received < (int)length && socket_valid) {
-        status = recv(self->fd, &buffer[received], (int)length - received, 0);
+        int status = recv(self->fd, 
+                          &buffer[received], 
+                          (int)length - received, 
+                          0);
 
         if (status == 0) {
             break;

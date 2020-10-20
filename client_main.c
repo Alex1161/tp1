@@ -18,7 +18,10 @@ void encode_cesar(char* msg, int key, size_t length, unsigned char *result){
     encryptor_cesar_uninit(&cesar);
 }
 
-void encode_vigenere(char* msg, char *key, size_t length, unsigned char *result){
+void encode_vigenere(char* msg, 
+                     char *key, 
+                     size_t length, 
+                     unsigned char *result) {
     encryptor_vigenere_t vigenere;
     encryptor_vigenere_init(&vigenere, key, strlen(key));
     encryptor_vigenere_encode(&vigenere, msg, length, result);
@@ -51,9 +54,11 @@ int main(int argc, char const *argv[]) {
     const char *server_host = argv[1];
     const char *server_port = argv[2];
     char method[strlen(argv[3]) - METHOD_LENGTH];
-    strcpy(method, &argv[3][METHOD_LENGTH]);
+    strncpy(method, 
+            &argv[3][METHOD_LENGTH], 
+            strlen(argv[3]) - METHOD_LENGTH + 1);
     char key[strlen(argv[4]) - KEY_LENGTH];
-    strcpy(key, &argv[4][KEY_LENGTH]);
+    strncpy(key, &argv[4][KEY_LENGTH], strlen(argv[4]) - KEY_LENGTH + 1);
 
     char buffer[CHUNK_SIZE];
     memset(buffer, 0, CHUNK_SIZE * sizeof(char));
