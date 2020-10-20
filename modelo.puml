@@ -5,25 +5,25 @@ hide interface fields
 
 Class Cesar{
     -key: int
-    +encode(self: encryptor_cesar_t *, message: const char *, result: const char *): int
+    +encode(message: const char *, result: const char *): int
     +decode(message: String): String
 }
 
 Class Vigenere{
     -key: String
-    +encode(self: encryptor_cesar_t *, message: const char *, message_size: size_t, result: const char *): int
-    +decode(self: encryptor_cesar_t *, code: unsigned char *, code_size: size_t, message: char *): int
+    +encode(message: const char *, message_size: size_t, result: const char *): int
+    +decode(code: unsigned char *, code_size: size_t, message: char *): int
 }
 
 Class ARC4{
     -key: String
-    +encode(self: encryptor_cesar_t *, message: const char *, message_size: size_t, result: const char *): int
-    +decode(self: encryptor_cesar_t *, code: unsigned char *, code_size: size_t, message: char *): int
+    +encode(message: const char *, message_size: size_t, result: const char *): int
+    +decode(code: unsigned char *, code_size: size_t, message: char *): int
 }
 
 Class Encryptor{
-    +encode(self: encryptor_cesar_t *, message: const char *, message_size: size_t, result: const char *): int
-    +decode(self: encryptor_cesar_t *, code: unsigned char *, code_size: size_t, message: char *): int
+    +encode(message: const char *, message_size: size_t, result: const char *): int
+    +decode(code: unsigned char *, code_size: size_t, message: char *): int
 }
 
 Class Socket{

@@ -69,7 +69,10 @@ int encryptor_decode(encryptor_t *self,
                      size_t code_length, 
                      char *result) {
     if (! strcmp(self->name, "cesar")) {
-        decode_cesar((unsigned char*)code, atoi(self->key), code_length, result);
+        decode_cesar((unsigned char*)code, 
+                     atoi(self->key), 
+                     code_length, 
+                     result);
     } else if (! strcmp(self->name, "vigenere")) {
         decode_vigenere((unsigned char*)code, self->key, code_length, result);
     } else if (! strcmp(self->name, "rc4")) {
