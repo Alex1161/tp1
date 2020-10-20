@@ -1,0 +1,39 @@
+@startuml Processor inferior
+hide circles
+skinparam ClassAttributeIconSize 0
+hide interface fields
+
+Class Encryptor{
+    -nombre: char *
+    -key: char *
+    +encode(message: const char *, message_size: size_t, result: unsigned char *): int
+    +decode(code: unsigned char *, code_size: size_t, message: char *): int
+}
+
+Class Socket{
+    -fd: int
+    +socket_bind_listen(service: const char *): int
+    +socket_accept(peer: socket_t *): int
+    +socket_connect(host: const char *, service: const char *): int
+    +socket_send(buffer: const char *, length: size_t): int
+    +socket_receive(buffer: char *, length: size_t): int
+}
+
+Class File_processor{
+    -name: const char*
+    -file: File *
+    -file_size: size_t
+    +file_processor_read(msg: char *): size_t
+    +file_processor_write(buffer: char *, size_buffer: size_t): size_t
+}
+
+class Processor{
+    +processor_process_client(server_host: const char *, server_port: const char *, file_name: const char *): int
+    +processor_process_server(server_port: const char *, file_name: const char *): int
+}
+
+Processor *-up- File_processor
+Processor -up-> Socket
+Processor -down-> Encryptor
+
+@enduml

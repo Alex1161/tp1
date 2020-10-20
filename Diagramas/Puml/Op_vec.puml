@@ -1,0 +1,36 @@
+@startuml Op_vec
+hide circles
+skinparam ClassAttributeIconSize 0
+hide interface fields
+
+Class Vigenere{
+    -key: char *
+    -size_key: size_t
+    -stream: unsigned char *
+    +encode(message: const char *, message_size: size_t, result: unsigned char *): int
+    +decode(code: unsigned char *, code_size: size_t, message: char *): int
+}
+
+Class ARC4{
+    -key: char *
+    -size_key: size_t
+    -stream: unsigned char *
+    +encode(message: const char *, message_size: size_t, result: unsigned char *): int
+    +decode(code: unsigned char *, code_size: size_t, message: char *): int
+}
+
+Class Op_vec{
+    +un_char_to_bytes(element: unsigned char *, bytes: int *, size_element: size_t): size_t
+    +bytes_to_un_char(bytes: int *, result: unsigned char *, size_bytes: size_t): size_t
+    +align(bytes_key: int *, bytes_key_aligned: int *, size_bytes_msg: size_t, size_bytes_key: size_t): size_t
+    +sum(bytes1: int *, bytes2: int *, result: int *, size: size_t): size_t
+    +sub(bytes1: int *, bytes2: int *, result: int *, size: size_t): size_t
+    +xor(message: const char *, key_stream: unsigned char *, result: unsigned char *, size: size_t): size_t
+    +swap(s: unsigned char *, i: size_t, j: size_t): void
+}
+
+Vigenere -down-> Op_vec
+ARC4 -down-> Op_vec
+
+
+@enduml

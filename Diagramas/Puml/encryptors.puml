@@ -1,0 +1,39 @@
+@startuml Encryptor
+hide circles
+skinparam ClassAttributeIconSize 0
+hide interface fields
+
+Class Cesar{
+    -key: int
+    +encode(message: const char *, result: unsigned char *): int
+    +decode(message: String): String
+}
+
+Class Vigenere{
+    -key: char *
+    -size_key: size_t
+    -stream: unsigned char *
+    +encode(message: const char *, message_size: size_t, result: unsigned char *): int
+    +decode(code: unsigned char *, code_size: size_t, message: char *): int
+}
+
+Class ARC4{
+    -key: char *
+    -size_key: size_t
+    -stream: unsigned char *
+    +encode(message: const char *, message_size: size_t, result: unsigned char *): int
+    +decode(code: unsigned char *, code_size: size_t, message: char *): int
+}
+
+Class Encryptor{
+    -nombre: char *
+    -key: char *
+    +encode(message: const char *, message_size: size_t, result: unsigned char *): int
+    +decode(code: unsigned char *, code_size: size_t, message: char *): int
+}
+
+Cesar .down.|> Encryptor
+Vigenere .down.|> Encryptor
+ARC4 .up.|> Encryptor
+
+@enduml

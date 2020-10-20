@@ -1,4 +1,4 @@
-@startuml tp
+@startuml DC general
 hide circles
 skinparam ClassAttributeIconSize 0
 hide interface fields

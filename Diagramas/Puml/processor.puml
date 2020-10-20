@@ -1,0 +1,23 @@
+@startuml processor_superior
+hide circles
+skinparam ClassAttributeIconSize 0
+hide interface fields
+
+class Processor{
+    -encryptor: encryptor_t *
+    +processor_process_client(server_host: const char *, server_port: const char *, file_name: const char *): int
+    +processor_process_server(server_port: const char *, file_name: const char *): int
+}
+
+Class Clien_main{
+    +main(argc: int, argv: const char **): int
+}
+
+Class Server_main{
+    +main(argc: int, argv: const char **): int
+}
+
+Clien_main --> Processor
+Server_main --> Processor
+
+@enduml
