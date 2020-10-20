@@ -14,9 +14,7 @@ int socket_init(socket_t *self) {
     return 0;
 }
 
-int socket_bind_listen(socket_t *self, 
-                       const char *host, 
-                       const char *service) {
+int socket_bind_listen(socket_t *self, const char *service) {
     struct addrinfo hints;
     struct addrinfo *result;
     
