@@ -9,7 +9,7 @@
 
 const int METHOD_LENGTH = 9;
 const int KEY_LENGTH = 6;
-const size_t CHUNK_SIZE = 64;
+const size_t MAX_LENGTH = 1000;
 
 void decode_cesar(unsigned char* msg, int key, size_t length, char *result){
     encryptor_cesar_t cesar;
@@ -68,19 +68,16 @@ int main(int argc, char const *argv[]) {
     socket_init(&peer);
     socket_accept(&socket, &peer);
 
-    char buffer[CHUNK_SIZE];
-    memset(buffer, 0, CHUNK_SIZE * sizeof(char));
-    int received = socket_receive(&peer, buffer, CHUNK_SIZE);;
-    while (received != 0) {
-        char *result = malloc(received * sizeof(char));
-        memset(result, 0, received * sizeof(char));
+    char buffer[MAX_LENGTH];
+    memset(buffer, 0, MAX_LENGTH * sizeof(char));
+    int received = socket_receive(&peer, buffer, MAX_LENGTH);;
+    char *result = malloc(received * sizeof(char));
+    memset(result, 0, received * sizeof(char));
+    
+    decode(buffer, received, method, key, result);
+    fwrite(result, 1, received, stdout);
 
-        decode(buffer, received, method, key, result);
-        fwrite(result, 1, received, stdout);
-        received = socket_receive(&peer, buffer, CHUNK_SIZE);
-        free(result);
-    }
-
+    free(result);
     socket_uninit(&peer);
     socket_uninit(&socket);
 

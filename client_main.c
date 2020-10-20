@@ -62,18 +62,28 @@ int main(int argc, char const *argv[]) {
 
     char buffer[CHUNK_SIZE];
     memset(buffer, 0, CHUNK_SIZE * sizeof(char));
-    FILE *file = stdin;
+
+    //calcular el tamaño del archivo
+    fseek(stdin, 0, SEEK_END);
+    size_t file_size = ftell(stdin);
+    rewind(stdin);
+    char *msg = malloc((file_size + 1) * sizeof(char));
+    msg[0] = '\0';
+
+    while (! feof(stdin)) {
+        size_t read = fread(buffer, 1, CHUNK_SIZE, stdin);
+        strncat(msg, buffer, read);
+    }
+
     socket_t socket;
     socket_init(&socket);
     socket_connect(&socket, server_host, server_port);
-    while (! feof(file)) {
-        size_t read = fread(buffer, 1, CHUNK_SIZE, file);
-        unsigned char result[read];
-        memset(result, 0, read * sizeof(unsigned char));
-        encode(buffer, read, method, key, result);
-         
-        socket_send(&socket, (const char *)result, read);
-    }
+    unsigned char *result = malloc(file_size * sizeof(unsigned char));
+    encode(msg, file_size, method, key, result);
+    socket_send(&socket, (const char *)result, file_size);
+
+    free(result);
+    free(msg);
     socket_uninit(&socket);
 
     return 0;
