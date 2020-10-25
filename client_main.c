@@ -11,7 +11,9 @@ int main(int argc, char const *argv[]) {
     //Parseando los argumentos de comando de linea
     const char *server_host = argv[1];
     const char *server_port = argv[2];
-    char method[strlen(argv[3]) - METHOD_LENGTH];
+    int method_length = strlen(argv[3]) - METHOD_LENGTH + 1;
+    char method[method_length];
+    memset(method, 0, method_length * sizeof(char));
     strncpy(method, 
             &argv[3][METHOD_LENGTH], 
             strlen(argv[3]) - METHOD_LENGTH + 1);
