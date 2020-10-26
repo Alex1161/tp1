@@ -51,7 +51,7 @@ int encryptor_encode(encryptor_t *self,
                      size_t msg_length, 
                      unsigned char *result) {
     if (! strcmp(self->name, "cesar")) {
-        encode_cesar(msg, atoi(self->key), msg_length, result);
+        encode_cesar(msg, strtol(self->key, NULL, 10), msg_length, result);
     } else if (! strcmp(self->name, "vigenere")) {
         encode_vigenere(msg, self->key, msg_length, result);
     } else if (! strcmp(self->name, "rc4")) {
@@ -70,7 +70,7 @@ int encryptor_decode(encryptor_t *self,
                      char *result) {
     if (! strcmp(self->name, "cesar")) {
         decode_cesar((unsigned char*)code, 
-                     atoi(self->key), 
+                     strtol(self->key, NULL, 10), 
                      code_length, 
                      result);
     } else if (! strcmp(self->name, "vigenere")) {
