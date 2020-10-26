@@ -16,7 +16,7 @@ int socket_init(socket_t *self) {
 
 int socket_bind_listen(socket_t *self, const char *service) {
     struct addrinfo hints;
-    struct addrinfo *result;
+    struct addrinfo *result, *aux;
     
     memset(&hints, 0, sizeof(struct addrinfo));
     hints.ai_family = AF_INET;
@@ -27,13 +27,20 @@ int socket_bind_listen(socket_t *self, const char *service) {
     if (status != 0){
         return ERROR;
     }
+    
+    bool bound = false;
+    for (aux = result; aux != NULL && bound == false; aux = aux->ai_next) {
+        self->fd = socket(aux->ai_family, aux->ai_socktype, aux->ai_protocol);
+        if (self->fd == -1) {
+            return ERROR;
+        } 
+        
+        status = bind(self->fd, aux->ai_addr, aux->ai_addrlen);
+        if (status != 0) {
+            close(self->fd);
+        }
 
-    self->fd = socket(result->ai_family, 
-                      result->ai_socktype, 
-                      result->ai_protocol);
-    status = bind(self->fd, result->ai_addr, result->ai_addrlen);
-    if (status != 0){
-        return ERROR;
+        bound = (status != -1);
     }
 
     freeaddrinfo(result);
