@@ -27,11 +27,12 @@ static void ksa(encryptor_arc4_t *self) {
 
 static int gen_key_stream(unsigned char *stream, 
                           unsigned char *key_stream, 
-                          size_t size_message){
+                          size_t size_message,
+                          size_t state){
     size_t i = 0;
     size_t j = 0;
 
-    for (size_t k = 0; k < size_message; k++) {
+    for (size_t k = 0; k < size_message + state; k++) {
         //PRGA
         i = (i + 1) % STREAM_SIZE;
         j = (j + stream[i]) % STREAM_SIZE;
@@ -47,15 +48,17 @@ static int gen_key_stream(unsigned char *stream,
 static int encode(encryptor_arc4_t *self, 
            const char *message, 
            size_t message_size, 
-           unsigned char *result) {
+           unsigned char *result,
+           size_t *state) {
     ksa(self);
     unsigned char key_stream[message_size];
-    gen_key_stream(self->stream, key_stream, message_size);
+    gen_key_stream(self->stream, key_stream, message_size, *state);
 
     for (size_t i = 0; i < message_size; i++) {
-		result[i] = message[i] ^ key_stream[i];
+		result[i] = message[i] ^ key_stream[i + (*state)];
 	}
     
+    *state = message_size;
     return 0;
 }
 
@@ -80,7 +83,7 @@ int encryptor_arc4_encode(encryptor_arc4_t *self,
                           const char *message, 
                           size_t message_size, 
                           unsigned char *result) {
-    return encode(self, message, message_size, result);
+    return encode(self, message, message_size, result, &self->state_encode);
 }
 
 int encryptor_arc4_decode(encryptor_arc4_t *self, 
@@ -90,7 +93,8 @@ int encryptor_arc4_decode(encryptor_arc4_t *self,
     encode(self, 
            (const char *)code, 
            code_size, 
-           (unsigned char *)message);
+           (unsigned char *)message, 
+           &self->state_decode);
     return 0;
 }
 
