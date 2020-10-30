@@ -7,6 +7,8 @@ typedef struct {
     char *key;
     size_t size_key;
     unsigned char *stream;
+    size_t state_encode;
+    size_t state_decode;
 } encryptor_arc4_t;
 
 int encryptor_arc4_init(encryptor_arc4_t *self, 

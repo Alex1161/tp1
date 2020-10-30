@@ -1,11 +1,16 @@
 #include "arc4.h"
-#include "../Op_vec/op_vec.h"
 #include <stdlib.h>
 const size_t STREAM_SIZE = 256;
 
 /*------------------------------------------------------------------------
   ------------------------- AUXILIAR FUNCTIONS ---------------------------
   ------------------------------------------------------------------------*/
+
+static void swap(unsigned char *s, size_t i, size_t j) {
+    unsigned char aux = s[i];
+    s[i] = s[j];
+    s[j] = aux;
+}
 
 static void ksa(encryptor_arc4_t *self) {
     size_t i = 0;
@@ -39,6 +44,22 @@ static int gen_key_stream(unsigned char *stream,
     return 0;
 }
 
+static int encode(encryptor_arc4_t *self, 
+           const char *message, 
+           size_t message_size, 
+           unsigned char *result) {
+    ksa(self);
+    unsigned char key_stream[message_size];
+    gen_key_stream(self->stream, key_stream, message_size);
+
+    for (size_t i = 0; i < message_size; i++) {
+		result[i] = message[i] ^ key_stream[i];
+	}
+    
+    return 0;
+}
+
+
 /*------------------------------------------------------------------------
   ----------------------- FUNCTIONS DEFINITIONS --------------------------
   ------------------------------------------------------------------------*/
@@ -49,6 +70,8 @@ int encryptor_arc4_init(encryptor_arc4_t *self,
     self->key = key;
     self->size_key = size_key;
     self->stream = malloc(STREAM_SIZE * sizeof(unsigned char));
+    self->state_encode = 0;
+    self->state_decode = 0;
 
     return 0;
 }
@@ -57,23 +80,17 @@ int encryptor_arc4_encode(encryptor_arc4_t *self,
                           const char *message, 
                           size_t message_size, 
                           unsigned char *result) {
-    ksa(self);
-    unsigned char key_stream[message_size];
-    gen_key_stream(self->stream, key_stream, message_size);
-
-    xor(message, key_stream, result, message_size);
-    
-    return 0;
+    return encode(self, message, message_size, result);
 }
 
 int encryptor_arc4_decode(encryptor_arc4_t *self, 
                           unsigned char *code, 
                           size_t code_size, 
                           char *message) {
-    encryptor_arc4_encode(self, 
-                          (const char *)code, 
-                          code_size, 
-                          (unsigned char *)message);
+    encode(self, 
+           (const char *)code, 
+           code_size, 
+           (unsigned char *)message);
     return 0;
 }
 
