@@ -6,8 +6,6 @@
 typedef struct {
     char *key;
     size_t size_key;
-    size_t state_encode;
-    size_t state_decode;
 } encryptor_vigenere_t;
 
 int encryptor_vigenere_init(encryptor_vigenere_t *self, 
@@ -17,12 +15,14 @@ int encryptor_vigenere_init(encryptor_vigenere_t *self,
 int encryptor_vigenere_encode(encryptor_vigenere_t *self, 
                               const char *message, 
                               size_t message_size, 
-                              unsigned char *result);
+                              unsigned char *result,
+                              size_t state);
 
 int encryptor_vigenere_decode(encryptor_vigenere_t *self, 
                               unsigned char *code, 
                               size_t code_size, 
-                              char *message);
+                              char *message,
+                              size_t state);
 
 int encryptor_vigenere_uninit(encryptor_vigenere_t *self);
 

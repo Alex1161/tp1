@@ -49,7 +49,7 @@ static void test1(){
 
     unsigned char encoded[14] = "";
 	const char msg[] = "Secret message";
-    encryptor_vigenere_encode(&encryptor_vigenere, msg, strlen(msg), encoded);
+    encryptor_vigenere_encode(&encryptor_vigenere, msg, strlen(msg), encoded, 0);
 	char actual[28] = "";
 	un_char_to_hexa(encoded, actual, 14);
     const char expected[] = "a6cac6e7d7d96bd2dec6d8c4dcd7";
@@ -72,7 +72,7 @@ static void test2(){
 
     unsigned char encoded[2] = "";
 	const char msg[] = "es";
-    encryptor_vigenere_encode(&encryptor_vigenere, msg, strlen(msg), encoded);
+    encryptor_vigenere_encode(&encryptor_vigenere, msg, strlen(msg), encoded, 0);
 	char actual[4] = "";
 	un_char_to_hexa(encoded, actual, 2);
     const char expected[] = "dec6";
@@ -95,7 +95,7 @@ static void test3(){
 
     unsigned char encoded[2] = "";
 	const char msg[] = "es";
-    encryptor_vigenere_encode(&encryptor_vigenere, msg, strlen(msg), encoded);
+    encryptor_vigenere_encode(&encryptor_vigenere, msg, strlen(msg), encoded, 0);
 	char actual[4] = "";
 	un_char_to_hexa(encoded, actual, 2);
     const char expected[] = "deec";
@@ -118,9 +118,9 @@ static void test4(){
 
     unsigned char encoded[2] = "";
 	const char msg[] = "es";
-    encryptor_vigenere_encode(&encryptor_vigenere, msg, strlen(msg), encoded);
+    encryptor_vigenere_encode(&encryptor_vigenere, msg, strlen(msg), encoded, 0);
 	char actual[2] = "";
-    encryptor_vigenere_decode(&encryptor_vigenere, encoded, 2, actual);
+    encryptor_vigenere_decode(&encryptor_vigenere, encoded, 2, actual, 0);
     const char expected[] = "es";
 
     tester_test(&test, (void *)expected, (void *)actual);
@@ -141,9 +141,9 @@ static void test5(){
 
     unsigned char encoded[2] = "";
 	const char msg[] = "es";
-    encryptor_vigenere_encode(&encryptor_vigenere, msg, strlen(msg), encoded);
+    encryptor_vigenere_encode(&encryptor_vigenere, msg, strlen(msg), encoded, 0);
 	char actual[2] = "";
-    encryptor_vigenere_decode(&encryptor_vigenere, encoded, 2, actual);
+    encryptor_vigenere_decode(&encryptor_vigenere, encoded, 2, actual, 0);
     const char expected[] = "es";
 
     tester_test(&test, (void *)expected, (void *)actual);
@@ -164,9 +164,9 @@ static void test6(){
 
     unsigned char encoded[14] = "";
 	const char msg[] = "Secret message";
-    encryptor_vigenere_encode(&encryptor_vigenere, msg, strlen(msg), encoded);
+    encryptor_vigenere_encode(&encryptor_vigenere, msg, strlen(msg), encoded, 0);
 	char actual[14] = "";
-	encryptor_vigenere_decode(&encryptor_vigenere, encoded, 14, actual);
+	encryptor_vigenere_decode(&encryptor_vigenere, encoded, 14, actual, 0);
     const char expected[] = "Secret message";
 
     tester_test(&test, (void *)expected, (void *)actual);
@@ -187,7 +187,7 @@ static void test7(){
 
     unsigned char encoded1[6] = "";
 	const char msg1[] = "Secret";
-    encryptor_vigenere_encode(&encryptor_vigenere, msg1, strlen(msg1), encoded1);
+    encryptor_vigenere_encode(&encryptor_vigenere, msg1, strlen(msg1), encoded1, 0);
 	char actual1[12] = "";
 	un_char_to_hexa(encoded1, actual1, 6);
     const char expected1[] = "a6cac6e7d7d9";
@@ -196,7 +196,7 @@ static void test7(){
 
     unsigned char encoded2[8] = "";
 	const char msg2[] = " message";
-    encryptor_vigenere_encode(&encryptor_vigenere, msg2, strlen(msg2), encoded2);
+    encryptor_vigenere_encode(&encryptor_vigenere, msg2, strlen(msg2), encoded2, 6);
 	char actual2[16] = "";
 	un_char_to_hexa(encoded2, actual2, 8);
     const char expected2[] = "6bd2dec6d8c4dcd7";
@@ -219,18 +219,18 @@ static void test8(){
 
     unsigned char encoded1[6] = "";
 	const char msg1[] = "Secret";
-    encryptor_vigenere_encode(&encryptor_vigenere, msg1, strlen(msg1), encoded1);
+    encryptor_vigenere_encode(&encryptor_vigenere, msg1, strlen(msg1), encoded1, 0);
 	char actual1[6] = "";
-	encryptor_vigenere_decode(&encryptor_vigenere, encoded1, 6, actual1);
+	encryptor_vigenere_decode(&encryptor_vigenere, encoded1, 6, actual1, 0);
     const char expected1[] = "Secret";
 
     tester_test(&test, (void *)expected1, (void *)actual1);
 
     unsigned char encoded2[8] = "";
 	const char msg2[] = " message";
-    encryptor_vigenere_encode(&encryptor_vigenere, msg2, strlen(msg2), encoded2);
+    encryptor_vigenere_encode(&encryptor_vigenere, msg2, strlen(msg2), encoded2, 6);
 	char actual2[8] = "";
-	encryptor_vigenere_decode(&encryptor_vigenere, encoded2, 8, actual2);
+	encryptor_vigenere_decode(&encryptor_vigenere, encoded2, 8, actual2, 6);
     const char expected2[] = " message";
 
     tester_test(&test, (void *)expected2, (void *)actual2);
