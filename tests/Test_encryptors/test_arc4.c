@@ -51,7 +51,7 @@ static void test1(){
 
     unsigned char encoded[3] = "";
 	const char msg[] = "Pan";
-    encryptor_arc4_encode(&encryptor_arc4, msg, strlen(msg), encoded);
+    encryptor_arc4_encode(&encryptor_arc4, msg, strlen(msg), encoded, 0);
 	char actual[6] = "";
 	un_char_to_hexa(encoded, actual, 3);
     const char expected[] = "69cae6";
@@ -74,7 +74,7 @@ static void test2(){
 
     unsigned char encoded[9] = "";
 	const char msg[] = "Plaintext";
-    encryptor_arc4_encode(&encryptor_arc4, msg, strlen(msg), encoded);
+    encryptor_arc4_encode(&encryptor_arc4, msg, strlen(msg), encoded, 0);
 	char actual[18] = "";
 	un_char_to_hexa(encoded, actual, 9);
     const char expected[] = "bbf316e8d940afad3";
@@ -97,7 +97,7 @@ static void test3(){
 
     unsigned char encoded[9] = "";
 	const char msg[] = "Un saludo";
-    encryptor_arc4_encode(&encryptor_arc4, msg, strlen(msg), encoded);
+    encryptor_arc4_encode(&encryptor_arc4, msg, strlen(msg), encoded, 0);
 	char actual[18] = "";
 	un_char_to_hexa(encoded, actual, 9);
     const char expected[] = "e97b3273b466d491a1";
@@ -120,9 +120,9 @@ static void test4(){
 
     unsigned char encoded[3] = "";
 	const char msg[] = "Pan";
-    encryptor_arc4_encode(&encryptor_arc4, msg, strlen(msg), encoded);
+    encryptor_arc4_encode(&encryptor_arc4, msg, strlen(msg), encoded, 0);
 	char actual[3] = "";
-	encryptor_arc4_decode(&encryptor_arc4, encoded, 3, actual);
+	encryptor_arc4_decode(&encryptor_arc4, encoded, 3, actual, 0);
     const char expected[] = "Pan";
 
     tester_test(&test, (void *)expected, (void *)actual);
@@ -143,9 +143,9 @@ static void test5(){
 
     unsigned char encoded[9] = "";
 	const char msg[] = "Plaintext";
-    encryptor_arc4_encode(&encryptor_arc4, msg, strlen(msg), encoded);
+    encryptor_arc4_encode(&encryptor_arc4, msg, strlen(msg), encoded, 0);
 	char actual[9] = "";
-	encryptor_arc4_decode(&encryptor_arc4, encoded, 9, actual);
+	encryptor_arc4_decode(&encryptor_arc4, encoded, 9, actual, 0);
     const char expected[] = "Plaintext";
 
     tester_test(&test, (void *)expected, (void *)actual);
@@ -166,9 +166,9 @@ static void test6(){
 
     unsigned char encoded[9] = "";
 	const char msg[] = "Un saludo";
-    encryptor_arc4_encode(&encryptor_arc4, msg, strlen(msg), encoded);
+    encryptor_arc4_encode(&encryptor_arc4, msg, strlen(msg), encoded, 0);
 	char actual[9] = "";
-	encryptor_arc4_decode(&encryptor_arc4, encoded, 9, actual);
+	encryptor_arc4_decode(&encryptor_arc4, encoded, 9, actual, 0);
     const char expected[] = "Un saludo";
 
     tester_test(&test, (void *)expected, (void *)actual);
@@ -189,7 +189,7 @@ static void test7(){
 
     unsigned char encoded[445] = "";
 	const char msg[] = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-    encryptor_arc4_encode(&encryptor_arc4, msg, strlen(msg), encoded);
+    encryptor_arc4_encode(&encryptor_arc4, msg, strlen(msg), encoded, 0);
 	char actual[2 * 445] = "";
 	un_char_to_hexa(encoded, actual, 445);
     const char expected_aux[] = "48bb19605188122932075d0a88f4d5fd"
@@ -248,7 +248,7 @@ static void test8(){
 
     unsigned char encoded1[5] = "";
 	const char msg1[] = "Plain";
-    encryptor_arc4_encode(&encryptor_arc4, msg1, strlen(msg1), encoded1);
+    encryptor_arc4_encode(&encryptor_arc4, msg1, strlen(msg1), encoded1, 0);
 	char actual1[10] = "";
 	un_char_to_hexa(encoded1, actual1, 5);
     const char expected1[] = "bbf316e8d9";
@@ -257,7 +257,7 @@ static void test8(){
 
     unsigned char encoded2[4] = "";
 	const char msg2[] = "text";
-    encryptor_arc4_encode(&encryptor_arc4, msg2, strlen(msg2), encoded2);
+    encryptor_arc4_encode(&encryptor_arc4, msg2, strlen(msg2), encoded2, 5);
 	char actual2[8] = "";
 	un_char_to_hexa(encoded2, actual2, 4);
     const char expected2[] = "40afad3";
@@ -280,18 +280,18 @@ static void test9(){
 
     unsigned char encoded1[5] = "";
 	const char msg1[] = "Plain";
-    encryptor_arc4_encode(&encryptor_arc4, msg1, strlen(msg1), encoded1);
+    encryptor_arc4_encode(&encryptor_arc4, msg1, strlen(msg1), encoded1, 0);
 	char actual1[5] = "";
-	encryptor_arc4_decode(&encryptor_arc4, encoded1, 5, actual1);
+	encryptor_arc4_decode(&encryptor_arc4, encoded1, 5, actual1, 0);
     const char expected1[] = "Plain";
 
     tester_test(&test, (void *)expected1, (void *)actual1);
     
     unsigned char encoded2[4] = "";
 	const char msg2[] = "text";
-    encryptor_arc4_encode(&encryptor_arc4, msg2, strlen(msg2), encoded2);
+    encryptor_arc4_encode(&encryptor_arc4, msg2, strlen(msg2), encoded2, 5);
 	char actual2[4] = "";
-	encryptor_arc4_decode(&encryptor_arc4, encoded2, 4, actual2);
+	encryptor_arc4_decode(&encryptor_arc4, encoded2, 4, actual2, 5);
     const char expected2[] = "text";
 
     tester_test(&test, (void *)expected2, (void *)actual2);
