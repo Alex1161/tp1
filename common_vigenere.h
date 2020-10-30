@@ -6,6 +6,7 @@
 typedef struct {
     char *key;
     size_t size_key;
+    size_t estado;
 } encryptor_vigenere_t;
 
 int encryptor_vigenere_init(encryptor_vigenere_t *self, 

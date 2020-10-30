@@ -15,6 +15,7 @@ static void test3();
 static void test4();
 static void test5();
 static void test6();
+static void test7();
 
 /*--------------------------------------
   ------------- Test Cesar -------------
@@ -27,6 +28,7 @@ void test_vigenere(){
     test4();
     test5();
     test6();
+    test7();
 }
 
 /*--------------------------------------
@@ -166,6 +168,38 @@ static void test6(){
     const char expected[] = "Secret message";
 
     tester_test(&test, (void *)expected, (void *)actual);
+
+    tester_uninit(&test);
+    encryptor_vigenere_uninit(&encryptor_vigenere);
+}
+
+static void test7(){
+    encryptor_vigenere_t encryptor_vigenere;
+    encryptor_vigenere_init(&encryptor_vigenere, "SecureKey", 9);
+
+    tester_t test;
+    tester_init(&test, 
+				equals, 
+				print, 
+				"encode Secret message with key SecureKey in  2 parts -> a6cac6e7d7d96bd2dec6d8c4dcd7");
+
+    unsigned char encoded1[6] = "";
+	const char msg1[] = "Secret";
+    encryptor_vigenere_encode(&encryptor_vigenere, msg1, strlen(msg1), encoded1);
+	char actual1[12] = "";
+	un_char_to_hexa(encoded1, actual1, 6);
+    const char expected1[] = "a6cac6e7d7d9";
+
+    tester_test(&test, (void *)expected1, (void *)actual1);
+
+    unsigned char encoded2[8] = "";
+	const char msg2[] = " message";
+    encryptor_vigenere_encode(&encryptor_vigenere, msg2, strlen(msg2), encoded2);
+	char actual2[16] = "";
+	un_char_to_hexa(encoded2, actual2, 8);
+    const char expected2[] = "6bd2dec6d8c4dcd7";
+
+    tester_test(&test, (void *)expected2, (void *)actual2);
 
     tester_uninit(&test);
     encryptor_vigenere_uninit(&encryptor_vigenere);
