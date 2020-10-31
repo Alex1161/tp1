@@ -1,5 +1,4 @@
 #include "common_vigenere.h"
-#include "common_op_vec.h"
 #include <stdlib.h>
 
 int encryptor_vigenere_init(encryptor_vigenere_t * self, 
