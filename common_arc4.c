@@ -45,24 +45,6 @@ static int gen_key_stream(unsigned char *stream,
     return 0;
 }
 
-static int encode(encryptor_arc4_t *self, 
-           const char *message, 
-           size_t message_size, 
-           unsigned char *result,
-           size_t *state) {
-    ksa(self);
-    unsigned char key_stream[message_size];
-    gen_key_stream(self->stream, key_stream, message_size, *state);
-
-    for (size_t i = 0; i < message_size; i++) {
-		result[i] = message[i] ^ key_stream[i + (*state)];
-	}
-    
-    *state = message_size;
-    return 0;
-}
-
-
 /*------------------------------------------------------------------------
   ----------------------- FUNCTIONS DEFINITIONS --------------------------
   ------------------------------------------------------------------------*/
@@ -73,8 +55,6 @@ int encryptor_arc4_init(encryptor_arc4_t *self,
     self->key = key;
     self->size_key = size_key;
     self->stream = malloc(STREAM_SIZE * sizeof(unsigned char));
-    self->state_encode = 0;
-    self->state_decode = 0;
 
     return 0;
 }
@@ -82,19 +62,29 @@ int encryptor_arc4_init(encryptor_arc4_t *self,
 int encryptor_arc4_encode(encryptor_arc4_t *self, 
                           const char *message, 
                           size_t message_size, 
-                          unsigned char *result) {
-    return encode(self, message, message_size, result, &self->state_encode);
+                          unsigned char *result,
+                          size_t state) {
+    ksa(self);
+    unsigned char key_stream[message_size + state];
+    gen_key_stream(self->stream, key_stream, message_size, state);
+
+    for (size_t i = 0; i < message_size; i++) {
+		result[i] = message[i] ^ key_stream[i + state];
+	}
+
+    return 0;
 }
 
 int encryptor_arc4_decode(encryptor_arc4_t *self, 
                           unsigned char *code, 
                           size_t code_size, 
-                          char *message) {
-    encode(self, 
-           (const char *)code, 
-           code_size, 
-           (unsigned char *)message, 
-           &self->state_decode);
+                          char *message,
+                          size_t state) {
+    encryptor_arc4_encode(self, 
+                          (const char *)code, 
+                          code_size, 
+                          (unsigned char *)message, 
+                          state);
     return 0;
 }
 

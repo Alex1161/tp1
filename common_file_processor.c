@@ -1,7 +1,7 @@
 #include "common_file_processor.h"
 #include <string.h>
 
-const size_t CHUNK_SIZE = 64;
+const size_t CHUNK = 64;
 
 /*---------------------------------------------------------------------------
   ------------------ AUXILIAR FUNCTIONS DECLARATIONS ------------------------
@@ -38,13 +38,13 @@ int file_processor_writer_init(file_processor_t *self,
 }
 
 size_t file_processor_read(file_processor_t *self, char *msg) {
-    char buffer[CHUNK_SIZE];
-    memset(buffer, 0, CHUNK_SIZE * sizeof(char));
+    char buffer[CHUNK];
+    memset(buffer, 0, CHUNK * sizeof(char));
 
     size_t size = file_size(self->file);
 
     while (! feof(self->file)) {
-        size_t read = fread(buffer, 1, CHUNK_SIZE, self->file);
+        size_t read = fread(buffer, 1, CHUNK, self->file);
         strncat(msg, buffer, read);
     }
 

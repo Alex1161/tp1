@@ -106,15 +106,15 @@ int socket_send(socket_t *self, const char *buffer, size_t length) {
     bool socket_valid = true;
 
     while (sent < (int)length && socket_valid) {
-        int status =send(self->fd, 
-                         &buffer[sent], 
-                         (int)length - sent, 
-                         MSG_NOSIGNAL);
+        int status = send(self->fd, 
+                          &buffer[sent], 
+                          (int)length - sent, 
+                          MSG_NOSIGNAL);
 
         if (status == 0) {
             socket_valid = false;
         } else if (status == -1) {
-            socket_valid = false;
+            break;
         } else {
             sent += status;
         }
@@ -128,29 +128,10 @@ int socket_send(socket_t *self, const char *buffer, size_t length) {
 }
 
 int socket_receive(socket_t *self, char *buffer, size_t length) {
-    int received = 0;
-    bool socket_valid = true;
-
-    while (received < (int)length && socket_valid) {
-        int status = recv(self->fd, 
-                          &buffer[received], 
-                          (int)length - received, 
-                          0);
-
-        if (status == 0) {
-            break;
-        } else if (status == -1) {
-            socket_valid = false;
-        } else {
-            received += status;
-        }
-    }
-
-    if (socket_valid) {
-        return (int)received;
-    } else {
-        return ERROR;
-    }
+    return recv(self->fd, 
+                buffer, 
+                (int)length, 
+                0);
 }
 
 int socket_uninit(socket_t *self) {

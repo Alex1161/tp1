@@ -1,26 +1,11 @@
 #include "common_processor.h"
-#include "common_file_processor.h"
 #include "common_socket.h"
 #include "common_encryptor.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
-const size_t MAX_LENGTH = 1000;
-
-/*---------------------------------------------------------------------------
-  ------------------ AUXILIAR FUNCTIONS DECLARATIONS ------------------------
-  ---------------------------------------------------------------------------*/
-
-static void connect_send(encryptor_t *encryptor, 
-                         const char *server_host, 
-                         const char *server_port, 
-                         char *msg, 
-                         size_t msg_length);
-
-static int connect_receive(encryptor_t *encryptor, 
-						   const char *server_port, 
-						   char *result, 
-						   size_t max_result_length);
+const size_t CHUNK_SIZE = 64;
 
 /*---------------------------------------------------------------------------
   ------------------------- FUNCTIONS DEFINITIONS ---------------------------
@@ -34,80 +19,44 @@ int processor_init(processor_t *self, char *method, char *key) {
 }
 
 int processor_process_client(processor_t *self, 
-                      const char *server_host, 
-                      const char *server_port,
-					  const char *file_name) {
-    file_processor_t file_processor;
-    file_processor_reader_init(&file_processor, file_name);
-    char *msg = malloc((file_processor.file_size + 1) * sizeof(char));
-    memset(msg, 0, (file_processor.file_size) * sizeof(char));
-    size_t read = file_processor_read(&file_processor, msg);
-    file_processor_uninit(&file_processor);
+                             const char *server_host, 
+                             const char *server_port,
+					         const char *file_name) {
+    //Socket
+    socket_t socket;
+    socket_init(&socket);
+    socket_connect(&socket, server_host, server_port);
 
-    connect_send(self->encryptor, server_host, server_port, msg, read);
+    //op archivos
+    FILE *file = (file_name == NULL) ? stdin : fopen(file_name, "r");
+    if (! file) {
+        return 1;
+    }
 
-    free(msg);
+    char msg[CHUNK_SIZE];
+    memset(msg, 0, CHUNK_SIZE * sizeof(char));
+    while (! feof(file)) {
+        size_t read = fread(msg, 1, CHUNK_SIZE, file);
+        
+        unsigned char result[CHUNK_SIZE];
+        memset(result, 0, CHUNK_SIZE * sizeof(char));
+    
+        encryptor_encode(self->encryptor, msg, read, result);
+        socket_send(&socket, (const char *)result, read);
+    }
+
+    if (file_name != NULL) {
+        fclose(file);
+    }
+
+    socket_uninit(&socket);
     return 0;
 }
 
 int processor_process_server(processor_t *self, 
 							 const char *server_port, 
 							 const char *file_name) {
-    char buffer[MAX_LENGTH];
-    memset(buffer, 0, MAX_LENGTH * sizeof(char));
-
-	int received = connect_receive(self->encryptor, 
-								   server_port, 
-								   buffer, 
-								   MAX_LENGTH);
-    
-    char *result = malloc(received * sizeof(char));
-    memset(result, 0, received * sizeof(char));
-    
-	file_processor_t file_processor;
-	file_processor_writer_init(&file_processor, NULL);
-
-    encryptor_decode(self->encryptor, buffer, received, result);
-	file_processor_write(&file_processor, result, received);
-
-	file_processor_uninit(&file_processor);
-    free(result);
-
-	return 0;
-}
-
-int processor_uninit(processor_t *self) {
-    encryptor_uninit(self->encryptor);
-	free(self->encryptor);
-    return 0;
-}
-
-/*---------------------------------------------------------------------------
-  ------------------ AUXILIAR FUNCTIONS DEFINITIONS -------------------------
-  ---------------------------------------------------------------------------*/
-
-static void connect_send(encryptor_t *encryptor, 
-                         const char *server_host, 
-                         const char *server_port, 
-                         char *msg, 
-                         size_t msg_length){
     socket_t socket;
-    socket_init(&socket);
-    unsigned char *result = malloc(msg_length * sizeof(unsigned char));
-
-    socket_connect(&socket, server_host, server_port);
-    encryptor_encode(encryptor, msg, msg_length, result);
-    socket_send(&socket, (const char *)result, msg_length);
-    
-    free(result);
-    socket_uninit(&socket);
-}
-
-static int connect_receive(encryptor_t *encryptor, 
-						   const char *server_port, 
-						   char *result, 
-						   size_t max_result_length) {
-	socket_t socket;
     socket_init(&socket);
     socket_bind_listen(&socket, server_port);
 
@@ -115,10 +64,40 @@ static int connect_receive(encryptor_t *encryptor,
     socket_init(&peer);
     socket_accept(&socket, &peer);
 
-	int receive = socket_receive(&peer, result, max_result_length);
+    FILE *file = (file_name == NULL) ? stdout : fopen(file_name, "w");
+    if (! file) {
+        return 1;
+    }
+
+    char buffer[CHUNK_SIZE];
+    memset(buffer, 0, CHUNK_SIZE * sizeof(char));
+	int receive = socket_receive(&peer, buffer, CHUNK_SIZE);
+    while (receive != 0){
+        char result[CHUNK_SIZE];
+        memset(result, 0, CHUNK_SIZE * sizeof(char));
+
+        encryptor_decode(self->encryptor, buffer, receive, result);
+
+        fwrite(result, 1, receive, file);
+        receive = socket_receive(&peer, 
+                                 buffer, 
+                                 (int)CHUNK_SIZE);
+        if(receive == -1){
+            return 1;
+        }
+    }
+
+    if (file_name != NULL) {
+        fclose(file);
+    }
 
     socket_uninit(&peer);
     socket_uninit(&socket);
+	return 0;
+}
 
-	return receive;
+int processor_uninit(processor_t *self) {
+    encryptor_uninit(self->encryptor);
+	free(self->encryptor);
+    return 0;
 }

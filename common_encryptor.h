@@ -6,6 +6,7 @@
 typedef struct {
     char *name;
     char *key;
+    size_t state;
 } encryptor_t;
 
 int encryptor_init(encryptor_t *self, char *name, char *key);
