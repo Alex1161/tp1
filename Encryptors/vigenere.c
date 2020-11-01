@@ -28,7 +28,7 @@ int encryptor_vigenere_decode(encryptor_vigenere_t *self,
                               char *message,
                               size_t state){
     for (size_t i = 0; i < code_size; i++) {
-        message[i] = code[i] - self->key[(i + state) % self->size_key];
+        message[i] = code[i] - self->key[(i + state) % self->size_key] + 256;
     }
 
     return 0;

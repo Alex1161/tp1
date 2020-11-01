@@ -13,7 +13,7 @@ const size_t CHUNK_SIZE = 64;
 
 int processor_init(processor_t *self, char *method, char *key) {
 	self->encryptor = malloc(sizeof(encryptor_t));
-    encryptor_init(self->encryptor, method, key);
+    encryptor_init(self->encryptor, method, (unsigned char*)key);
 
     return 0;
 }
@@ -33,13 +33,12 @@ int processor_process_client(processor_t *self,
         return 1;
     }
 
-    char msg[CHUNK_SIZE];
-    memset(msg, 0, CHUNK_SIZE * sizeof(char));
+    unsigned char msg[CHUNK_SIZE];
+    memset(msg, 0, CHUNK_SIZE * sizeof(unsigned char));
     while (! feof(file)) {
         size_t read = fread(msg, 1, CHUNK_SIZE, file);
-        
         unsigned char result[CHUNK_SIZE];
-        memset(result, 0, CHUNK_SIZE * sizeof(char));
+        memset(result, 0, CHUNK_SIZE * sizeof(unsigned char));
     
         encryptor_encode(self->encryptor, msg, read, result);
         socket_send(&socket, (const char *)result, read);
@@ -69,22 +68,19 @@ int processor_process_server(processor_t *self,
         return 1;
     }
 
-    char buffer[CHUNK_SIZE];
-    memset(buffer, 0, CHUNK_SIZE * sizeof(char));
-	int receive = socket_receive(&peer, buffer, CHUNK_SIZE);
-    while (receive != 0){
-        char result[CHUNK_SIZE];
-        memset(result, 0, CHUNK_SIZE * sizeof(char));
+    unsigned char buffer[CHUNK_SIZE];
+    memset(buffer, 0, CHUNK_SIZE * sizeof(unsigned char));
+	int receive = socket_receive(&peer, (char *)buffer, CHUNK_SIZE);
+    while (receive != 0) {
+        unsigned char result[CHUNK_SIZE];
+        memset(result, 0, CHUNK_SIZE * sizeof(unsigned char));
 
-        encryptor_decode(self->encryptor, buffer, receive, result);
+        encryptor_decode(self->encryptor, buffer, CHUNK_SIZE, result);
 
         fwrite(result, 1, receive, file);
         receive = socket_receive(&peer, 
-                                 buffer, 
-                                 (int)CHUNK_SIZE);
-        if(receive == -1){
-            return 1;
-        }
+                                 (char *)buffer, 
+                                 CHUNK_SIZE);
     }
 
     if (file_name != NULL) {

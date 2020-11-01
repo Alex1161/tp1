@@ -12,26 +12,26 @@
 static void decode_cesar(unsigned char* msg, 
                          int key, 
                          size_t length, 
-                         char *result);
+                         unsigned char *result);
 static void decode_vigenere(encryptor_t *self,
                             unsigned char* msg, 
                             size_t length, 
-                            char *result);
+                            unsigned char *result);
 static void decode_arc4(encryptor_t *self,
                         unsigned char* msg, 
                         size_t length, 
-                        char *result);
+                        unsigned char *result);
 
-static void encode_cesar(char* msg, 
+static void encode_cesar(unsigned char* msg, 
                          int key, 
                          size_t length, 
                          unsigned char *result);
 static void encode_vigenere(encryptor_t *self,
-                            char* msg, 
+                            unsigned char* msg, 
                             size_t length, 
                             unsigned char *result);
 static void encode_arc4(encryptor_t *self,
-                        char* msg, 
+                        unsigned char* msg, 
                         size_t length, 
                         unsigned char *result);
 
@@ -39,7 +39,7 @@ static void encode_arc4(encryptor_t *self,
   ------------------------- FUNCTIONS DEFINITIONS ---------------------------
   ---------------------------------------------------------------------------*/
 
-int encryptor_init(encryptor_t *self, char *name, char *key){
+int encryptor_init(encryptor_t *self, char *name, unsigned char *key){
     self->name = name;
     self->key = key;
     self->state = 0;
@@ -48,11 +48,14 @@ int encryptor_init(encryptor_t *self, char *name, char *key){
 }
 
 int encryptor_encode(encryptor_t *self, 
-                     char *msg, 
+                     unsigned char *msg, 
                      size_t msg_length, 
                      unsigned char *result) {
     if (! strcmp(self->name, "cesar")) {
-        encode_cesar(msg, strtol(self->key, NULL, 10), msg_length, result);
+        encode_cesar(msg, 
+                     strtol((char *)self->key, NULL, 10), 
+                     msg_length, 
+                     result);
     } else if (! strcmp(self->name, "vigenere")) {
         encode_vigenere(self, msg, msg_length, result);
     } else if (! strcmp(self->name, "rc4")) {
@@ -66,18 +69,18 @@ int encryptor_encode(encryptor_t *self,
 
 
 int encryptor_decode(encryptor_t *self, 
-                     char *code, 
+                     unsigned char *code, 
                      size_t code_length, 
-                     char *result) {
+                     unsigned char *result) {
     if (! strcmp(self->name, "cesar")) {
-        decode_cesar((unsigned char*)code, 
-                     strtol(self->key, NULL, 10), 
+        decode_cesar(code, 
+                     strtol((char *)self->key, NULL, 10), 
                      code_length, 
                      result);
     } else if (! strcmp(self->name, "vigenere")) {
-        decode_vigenere(self, (unsigned char*)code, code_length, result);
+        decode_vigenere(self, code, code_length, result);
     } else if (! strcmp(self->name, "rc4")) {
-        decode_arc4(self, (unsigned char*)code, code_length, result);
+        decode_arc4(self, code, code_length, result);
     } else {
         return 1;
     }
@@ -97,7 +100,7 @@ int encryptor_uninit(encryptor_t *self){
 static void decode_cesar(unsigned char* msg, 
                          int key, 
                          size_t length, 
-                         char *result) {
+                         unsigned char *result) {
     encryptor_cesar_t cesar;
     encryptor_cesar_init(&cesar, key);
     encryptor_cesar_decode(&cesar, msg, length, result);
@@ -107,28 +110,28 @@ static void decode_cesar(unsigned char* msg,
 static void decode_vigenere(encryptor_t *self,
                             unsigned char* msg, 
                             size_t length, 
-                            char *result) {
+                            unsigned char *result) {
     encryptor_vigenere_t vigenere;
-    encryptor_vigenere_init(&vigenere, self->key, strlen(self->key));
+    encryptor_vigenere_init(&vigenere, self->key, strlen((char *)self->key));
     encryptor_vigenere_decode(&vigenere, msg, length, result, self->state);
     encryptor_vigenere_uninit(&vigenere);
 
-    self->state = length;
+    self->state += length;
 }
 
 static void decode_arc4(encryptor_t *self,
                         unsigned char* msg, 
                         size_t length, 
-                        char *result) {
+                        unsigned char *result) {
     encryptor_arc4_t arc4;
-    encryptor_arc4_init(&arc4, self->key, strlen(self->key));
+    encryptor_arc4_init(&arc4, self->key, strlen((char *)self->key));
     encryptor_arc4_decode(&arc4, msg, length, result, self->state);
     encryptor_arc4_uninit(&arc4);
 
-    self->state = length;
+    self->state += length;
 }
 
-static void encode_cesar(char* msg, 
+static void encode_cesar(unsigned char* msg, 
                          int key, 
                          size_t length, 
                          unsigned char *result) {
@@ -139,25 +142,25 @@ static void encode_cesar(char* msg,
 }
 
 static void encode_vigenere(encryptor_t *self,
-                            char* msg, 
+                            unsigned char* msg, 
                             size_t length, 
                             unsigned char *result) {
     encryptor_vigenere_t vigenere;
-    encryptor_vigenere_init(&vigenere, self->key, strlen(self->key));
+    encryptor_vigenere_init(&vigenere, self->key, strlen((char *)self->key));
     encryptor_vigenere_encode(&vigenere, msg, length, result, self->state);
     encryptor_vigenere_uninit(&vigenere);
 
-    self->state = length;
+    self->state += length;
 }
 
 static void encode_arc4(encryptor_t *self,
-                        char* msg, 
+                        unsigned char* msg, 
                         size_t length, 
                         unsigned char *result) {
     encryptor_arc4_t arc4;
-    encryptor_arc4_init(&arc4, self->key, strlen(self->key));
+    encryptor_arc4_init(&arc4, self->key, strlen((char *)self->key));
     encryptor_arc4_encode(&arc4, msg, length, result, self->state);
     encryptor_arc4_uninit(&arc4);
 
-    self->state = length;
+    self->state += length;
 }

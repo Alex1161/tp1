@@ -50,7 +50,7 @@ static int gen_key_stream(unsigned char *stream,
   ------------------------------------------------------------------------*/
 
 int encryptor_arc4_init(encryptor_arc4_t *self, 
-                        char *key, 
+                        unsigned char *key, 
                         size_t size_key){
     self->key = key;
     self->size_key = size_key;
@@ -60,7 +60,7 @@ int encryptor_arc4_init(encryptor_arc4_t *self,
 }
 
 int encryptor_arc4_encode(encryptor_arc4_t *self, 
-                          const char *message, 
+                          const unsigned char *message, 
                           size_t message_size, 
                           unsigned char *result,
                           size_t state) {
@@ -78,12 +78,12 @@ int encryptor_arc4_encode(encryptor_arc4_t *self,
 int encryptor_arc4_decode(encryptor_arc4_t *self, 
                           unsigned char *code, 
                           size_t code_size, 
-                          char *message,
+                          unsigned char *message,
                           size_t state) {
     encryptor_arc4_encode(self, 
-                          (const char *)code, 
+                          code, 
                           code_size, 
-                          (unsigned char *)message, 
+                          message, 
                           state);
     return 0;
 }

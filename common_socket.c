@@ -121,18 +121,38 @@ int socket_send(socket_t *self, const char *buffer, size_t length) {
     }
 
     if (socket_valid) {
-        return (int)sent;
+        return sent;
     } else {
         return ERROR;
     }
 }
 
 int socket_receive(socket_t *self, char *buffer, size_t length) {
-    return recv(self->fd, 
-                buffer, 
-                (int)length, 
-                0);
+    // return recv(self->fd, 
+    //             // buffer, 
+                // // (int)length, 
+                // 0);
+    int received = 0;
+    //bool socket_valid = true;
+
+    while (received < (int)length) {
+        int status = recv(self->fd, 
+                          &buffer[received], 
+                          (int)length - received, 
+                          0);
+
+        if (status == 0) {
+            break;
+        } else if (status == -1) {
+            break;
+        } else {
+            received += status;
+        }
+    }
+
+    return received;
 }
+
 
 int socket_uninit(socket_t *self) {
     shutdown(self->fd, SHUT_RDWR);

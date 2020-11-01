@@ -17,6 +17,7 @@ static void test5();
 static void test6();
 static void test7();
 static void test8();
+static void test9();
 
 /*--------------------------------------
   ------------- Test Cesar -------------
@@ -31,6 +32,7 @@ void test_vigenere(){
     test6();
     test7();
     test8();
+    test9();
 }
 
 /*--------------------------------------
@@ -99,6 +101,29 @@ static void test3(){
 	char actual[4] = "";
 	un_char_to_hexa(encoded, actual, 2);
     const char expected[] = "deec";
+
+    tester_test(&test, (void *)expected, (void *)actual);
+
+    tester_uninit(&test);
+    encryptor_vigenere_uninit(&encryptor_vigenere);
+}
+
+static void test9(){
+	encryptor_vigenere_t encryptor_vigenere;
+    encryptor_vigenere_init(&encryptor_vigenere, "Secret", 6);
+
+    tester_t test;
+    tester_init(&test, 
+				equals, 
+				print, 
+				"encode Attack at dawn with key Secret -> 94d9d7d3c8df73c6d792c9d5cad3");
+
+    unsigned char encoded[14] = "";
+	const char msg[] = "Attack at dawn";
+    encryptor_vigenere_encode(&encryptor_vigenere, msg, strlen(msg), encoded, 0);
+	char actual[28] = "";
+	un_char_to_hexa(encoded, actual, 14);
+    const char expected[] = "94d9d7d3c8df73c6d792c9d5cad3";
 
     tester_test(&test, (void *)expected, (void *)actual);
 

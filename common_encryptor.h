@@ -5,21 +5,21 @@
 
 typedef struct {
     char *name;
-    char *key;
+    unsigned char *key;
     size_t state;
 } encryptor_t;
 
-int encryptor_init(encryptor_t *self, char *name, char *key);
+int encryptor_init(encryptor_t *self, char *name, unsigned char *key);
 
 int encryptor_encode(encryptor_t *self, 
-                     char *msg, 
+                     unsigned char *msg, 
                      size_t msg_length, 
                      unsigned char *result);
 
 int encryptor_decode(encryptor_t *self, 
-                     char *code, 
+                     unsigned char *code, 
                      size_t code_length, 
-                     char *result);
+                     unsigned char *result);
 
 int encryptor_uninit(encryptor_t *self);
 
